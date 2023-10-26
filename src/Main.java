@@ -48,13 +48,14 @@ public class Main {
 //        medicationController.insertMedications();
 
         AuthenticationServer authenticationServer = new AuthenticationServer();
-        Users users = authenticationServer.login("HuisArts");
+        Users users = authenticationServer.login("Apotheker");
         if(users !=null){
             if (users.hasType("admin")){
                 System.out.println("Access granted to admin functionality.");
             }else if (users.hasType("HuisArts")){
-//                System.out.println("Access granted to HuisArts functionality.");
                 HuisArts.test();
+            }else if (users.hasType("apotheker")){
+                Apotheker.apothekerStartMenu();
             }else {
                 System.out.println("Access denied. User doesn't have necessary roles.");
             }

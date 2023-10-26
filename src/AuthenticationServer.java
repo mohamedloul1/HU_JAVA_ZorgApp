@@ -12,6 +12,9 @@ public class AuthenticationServer {
         Users huisArts = new Users(2,"HuisArts");
         huisArts.addType("HuisArts");
         user.add(huisArts);
+        Users apotheker = new Users(3,"Apotheker");
+        apotheker.addType("apotheker");
+        user.add(apotheker);
     }
     public Users login(String username){
         for(Users users : user){
