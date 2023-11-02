@@ -13,7 +13,7 @@ public class AuthenticationServer {
         huisArts.addType("HuisArts");
         user.add(huisArts);
         Users apotheker = new Users(3,"Apotheker");
-        apotheker.addType("apotheker");
+        apotheker.addType("Apotheker");
         user.add(apotheker);
     }
     public Users login(String username){

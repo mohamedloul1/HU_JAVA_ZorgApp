@@ -22,12 +22,17 @@ public class PatientController {
                     " Zorg ervoor dat de database actief is en controleer uw databaseconfiguratie.");
         }
     }
+
     List<Patient>patintList=new ArrayList<>();
     Menus menus = new Menus();
 
     public  void retrievePatient() {
         try (Statement statement = connection.createStatement()) {
-            String sqlQuery = "SELECT * FROM Patient";
+//            String sqlQuery = "SELECT * FROM Patient";
+            String sqlQuery = "SELECT Medications.MedicationID, Medications.MedicationName, Medications.Dosage, Patient.PatientID, Patient.FirstName, Patient.LastName, Patient.DateOfBirth, Patient.PatientHeight, Patient.PatienWeight " +
+                    "FROM Medications " +
+                    "INNER JOIN Patient ON Medications.PatientID = Patient.PatientID";
+
             ResultSet resultSet = statement.executeQuery(sqlQuery);
 
             if (!resultSet.isBeforeFirst()) {
@@ -41,12 +46,12 @@ public class PatientController {
                             resultSet.getDate("DateOfBirth").toLocalDate(),
                             resultSet.getDouble("PatientHeight"),
                             resultSet.getDouble("PatienWeight"));
-//                    System.out.format(" Patiëntnummer:\u001B[32m %d\u001B[0m", patient.getPatientID());
-//                    System.out.format(" Voornaam:\u001B[32m%s\u001B[0m", patient.getFirstName());
-//                    System.out.format(" Achternaam:\u001B[32m%s\u001B[0m", patient.getLastName());
-//                    System.out.format(" geboortedatum:\u001B[32m%s\u001B[0m", patient.getDateOfBirth());
-//                    System.out.format(" Hoogte:\u001B[32m%s\u001B[0m", patient.getPatientHeight());
-//                    System.out.format(" Gewicht:\u001B[32m%s\u001B[0m%n", patient.getPatientWeight());
+                    Medication medication = new Medication(
+                            resultSet.getInt("MedicationID"),
+                            resultSet.getString("MedicationName"),
+                            resultSet.getString("Dosage"),
+                            resultSet.getInt("PatientID"));
+                    patient.setMedication(medication);
                     patintList.add(patient);
                 }
             }
@@ -56,7 +61,7 @@ public class PatientController {
             e.printStackTrace();
         }
     }
-
+    Users users;
 
 
 
@@ -67,23 +72,59 @@ public class PatientController {
                 double height = patient.getPatientHeight();
                 double weight = patient.getPatientWeight();
                 LocalDate newDateOfBirth = patient.getDateOfBirth();
-
                 int age = calcAgeInYears(newDateOfBirth);
                 double bmi = calculateBMI(height, weight);
-                System.out.format(" Patiëntnummer:\u001B[32m %d\u001B[0m", patient.getPatientID());
-                System.out.format(" Voornaam:\u001B[32m%s\u001B[0m", patient.getFirstName());
-                System.out.format(" Achternaam:\u001B[32m%s\u001B[0m", patient.getLastName());
-                System.out.format(" geboortedatum:\u001B[32m%s\u001B[0m", patient.getDateOfBirth());
-                System.out.format(" Hoogte:\u001B[32m%s\u001B[0m", patient.getPatientHeight());
-                System.out.format(" Gewicht:\u001B[32m%s\u001B[0m%n", patient.getPatientWeight());
-                System.out.format("BMI is: \u001B[32m %s \u001B[0mkg/m²%n", bmi);
-                System.out.format("Leeftijd: \u001B[32m %s \u001B[0m", age);
+                Medication medication = patient.getMedication();
+
+                System.out.format("------------------------ Patiëntnummer:" + Colors.PURPLE+"%d"+ Colors.RESET+ "------------------------ %n" , patient.getPatientID());
+                System.out.format("Voornaam:" + Colors.PURPLE+ "%s"+Colors.RESET+"%n", patient.getFirstName());
+                System.out.format("Achternaam:" + Colors.PURPLE + "%s"+Colors.RESET+" %n", patient.getLastName());
+                System.out.format("Geboortedatum:"+Colors.PURPLE +"%s"+Colors.RESET+"%n" , patient.getDateOfBirth());
+                System.out.format("Hoogte:" + Colors.PURPLE+ "%s"+Colors.RESET+"%n", patient.getPatientHeight());
+                System.out.format("Gewicht:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", patient.getPatientWeight());
+                System.out.format("BMI is:"+Colors.PURPLE+"%s"+Colors.RESET+"kg/m² %n", bmi);
+                System.out.format("Leeftijd:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", age);
+                System.out.format("Medicatie ID:"+Colors.PURPLE+ "%d%n"+Colors.RESET, medication.getMedicationID());
+                System.out.format("Medicatie naam:"+Colors.PURPLE+ "%s%n"+Colors.RESET, medication.getMedicationName());
+                System.out.format("Dosering:"+Colors.PURPLE+" %s%n"+Colors.RESET, medication.getDosage());
+            }
+            Administration.BackToTheMainMenu(users);
+
+        } catch (Exception e) {
+            System.err.println("Er is een fout opgetreden bij het ophalen van patiëntgegevens: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    public void displayPatientListWithoutbackFunction( ) {
+        this.retrievePatient();
+        try {
+            for (Patient patient : patintList) {
+                double height = patient.getPatientHeight();
+                double weight = patient.getPatientWeight();
+                LocalDate newDateOfBirth = patient.getDateOfBirth();
+                int age = calcAgeInYears(newDateOfBirth);
+                double bmi = calculateBMI(height, weight);
+                Medication medication = patient.getMedication();
+
+                System.out.format("------------------------ Patiëntnummer:" + Colors.PURPLE+"%d"+ Colors.RESET+ "------------------------ %n" , patient.getPatientID());
+                System.out.format("Voornaam:" + Colors.PURPLE+ "%s"+Colors.RESET+"%n", patient.getFirstName());
+                System.out.format("Achternaam:" + Colors.PURPLE + "%s"+Colors.RESET+" %n", patient.getLastName());
+                System.out.format("Geboortedatum:"+Colors.PURPLE +"%s"+Colors.RESET+"%n" , patient.getDateOfBirth());
+                System.out.format("Hoogte:" + Colors.PURPLE+ "%s"+Colors.RESET+"%n", patient.getPatientHeight());
+                System.out.format("Gewicht:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", patient.getPatientWeight());
+                System.out.format("BMI is:"+Colors.PURPLE+"%s"+Colors.RESET+"kg/m² %n", bmi);
+                System.out.format("Leeftijd:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", age);
+                System.out.format("Medicatie ID:"+Colors.PURPLE+ "%d%n"+Colors.RESET, medication.getMedicationID());
+                System.out.format("Medicatie naam:"+Colors.PURPLE+ "%s%n"+Colors.RESET, medication.getMedicationName());
+                System.out.format("Dosering:"+Colors.PURPLE+" %s%n"+Colors.RESET, medication.getDosage());
             }
         } catch (Exception e) {
             System.err.println("Er is een fout opgetreden bij het ophalen van patiëntgegevens: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
     public double calculateBMI(double height, double weight) {
         double heightInMeters = height / 100.0;
         double bmi = weight / (heightInMeters * heightInMeters);
@@ -184,6 +225,7 @@ public class PatientController {
         Scanner userInput = new Scanner(System.in);
         var runner = true;
         try {
+            this.displayPatientListWithoutbackFunction();
             do {
                 System.out.print("Voer het ID van de patiënt in die je wilt bijwerken: ");
                 try {
@@ -202,12 +244,13 @@ public class PatientController {
                             double currentPatientHeight = resultSet.getDouble("PatientHeight");
                             double currentPatientWeight = resultSet.getDouble("PatienWeight");
 
-                            System.out.println("\u001B[32m Huidige gegevens van de patiënt:\u001B[0m");
-                            System.out.println("Voornaam: "+ "\u001B[34m" + currentFirstName + "\u001B[0m");
-                            System.out.println("Achternaam: "+ "\u001B[34m" + currentLastName + "\u001B[0m");
-                            System.out.println("Geboortedatum: "+ "\u001B[34m" + currentDateOfBirth + "\u001B[0m");
-                            System.out.println("Hoogte: " + "\u001B[34m"+ currentPatientHeight + "\u001B[0m");
-                            System.out.println("Gewicht: "+ "\u001B[34m" + currentPatientWeight + "\u001B[0m");
+                            System.out.println("------------------------------------------------------");
+                            System.out.println(Colors.BLUE+"Huidige gegevens van de patiënt:"+Colors.RESET);
+                            System.out.println("Voornaam: "+Colors.PURPLE+ currentFirstName +Colors.RESET);
+                            System.out.println("Achternaam: "+Colors.PURPLE+ currentLastName +Colors.RESET);
+                            System.out.println("Geboortedatum: "+Colors.PURPLE+ currentDateOfBirth +Colors.RESET);
+                            System.out.println("Hoogte: " +Colors.PURPLE+ currentPatientHeight +Colors.RESET);
+                            System.out.println("Gewicht: "+Colors.PURPLE+ currentPatientWeight +Colors.RESET);
 
                             // Vraag om nieuwe gegevens voor de patiënt
                             System.out.print("Voer de nieuwe voornaam in (druk op Enter om niet bij te werken): ");
@@ -261,17 +304,18 @@ public class PatientController {
                                 int affectedRows = updateStatement.executeUpdate();
 
                                 if (affectedRows > 0) {
-                                    System.out.println("Patiëntgegevens zijn succesvol bijgewerkt.");
+                                    System.out.println(Colors.GREEN+"Patiëntgegevens zijn succesvol bijgewerkt."+Colors.RESET);
                                 } else {
                                     System.out.println("\u001B[31m Er is iets fout gegaan bij het bijwerken van de patiëntgegevens.\u001B[0m");
                                 }
                             }
-                            System.out.print("\u001B[34m Wil je nog een andere patiënt bijwerken? (ja/nee): \u001B[0m");
+                            System.out.println("------------------------------------------------- \n");
+                            System.out.print("Wil je nog een andere patiënt bijwerken?"+"(\u001B[32mja\u001B[0m"+ "/" +"\u001B[31mnee\u001B[0m):");
                             String input = userInput.nextLine().toLowerCase();
                             if (!input.equals("ja")) {
                                 runner = false;
                                 System.out.println("\u001B[33mTerug naar Patiënten menu\u001B[0m");
-                                menus.medicationsMenu();                            }
+                                }
                         } else {
                             System.out.println("\u001B[31m Patiënt met opgegeven ID niet gevonden.\u001B[0m");
                         }
@@ -279,7 +323,6 @@ public class PatientController {
                 } catch(NumberFormatException e){
                     System.out.println("\u001B[31m Ongeldige invoer: Voer een geldig geheel getal in.\u001B[0m");
                 }
-
             }while (runner);
         } catch (Exception e) {
             e.printStackTrace();
@@ -289,34 +332,53 @@ public class PatientController {
     }
     public void searchPatientById() {
         Scanner userInput = new Scanner(System.in);
+        var runner = true;
+
         try {
-            System.out.print("Voer het ID van de patiënt in die je wilt zoeken: ");
-            int patientId = Integer.parseInt(userInput.nextLine());
+            while (runner) {
+                System.out.print("Voer het ID van de patiënt in die je wilt zoeken: ");
+                int patientId = Integer.parseInt(userInput.nextLine());
 
-            // Check of de patiënt bestaat voordat je gaat zoeken
-            String sqlSelect = "SELECT * FROM Patient WHERE PatientID = ?";
-            try (PreparedStatement selectStatement = connection.prepareStatement(sqlSelect)) {
-                selectStatement.setInt(1, patientId);
-                ResultSet resultSet = selectStatement.executeQuery();
+                // Check of de patiënt bestaat voordat je gaat zoeken
+//                String sqlSelect = "SELECT * FROM Patient WHERE PatientID = ?";
+                String sqlSelect = "SELECT Medications.MedicationID, Medications.MedicationName, Medications.Dosage, Patient.PatientID, Patient.FirstName, Patient.LastName, Patient.DateOfBirth, Patient.PatientHeight, Patient.PatienWeight " +
+                        "FROM Medications " +
+                        "INNER JOIN Patient ON Medications.PatientID = Patient.PatientID " +
+                        "WHERE Patient.PatientID = ?";
 
-                if (resultSet.next()) {
-                    String currentFirstName = resultSet.getString("FirstName");
-                    String currentLastName = resultSet.getString("LastName");
-                    Date currentDateOfBirth = resultSet.getDate("DateOfBirth");
-                    double currentPatientHeight = resultSet.getDouble("PatientHeight");
-                    double currentPatientWeight = resultSet.getDouble("PatienWeight");
+                try (PreparedStatement selectStatement = connection.prepareStatement(sqlSelect)) {
+                    selectStatement.setInt(1, patientId);
+                    ResultSet resultSet = selectStatement.executeQuery();
 
-                    System.out.println("\u001B[32mPatiënt gevonden:\u001B[0m");
-                    System.out.println("Voornaam: " + "\u001B[34m" + currentFirstName + "\u001B[0m");
-                    System.out.println("Achternaam: " + "\u001B[34m" + currentLastName + "\u001B[0m");
-                    System.out.println("Geboortedatum: " + "\u001B[34m" + currentDateOfBirth + "\u001B[0m");
-                    System.out.println("Hoogte: " + "\u001B[34m" + currentPatientHeight + "\u001B[0m");
-                    System.out.println("Gewicht: " + "\u001B[34m" + currentPatientWeight + "\u001B[0m");
-                } else {
-                    System.out.println("\u001B[31mPatiënt met opgegeven ID niet gevonden.\u001B[0m");
+                    if (resultSet.next()) {
+                        int currentPatientID = resultSet.getInt("PatientID");
+                        String currentFirstName = resultSet.getString("FirstName");
+                        String currentLastName = resultSet.getString("LastName");
+                        Date currentDateOfBirth = resultSet.getDate("DateOfBirth");
+                        double currentPatientHeight = resultSet.getDouble("PatientHeight");
+                        double currentPatientWeight = resultSet.getDouble("PatienWeight");
+
+                        System.out.println("\u001B[32mPatiënt gevonden:\u001B[0m");
+                        System.out.println("Voornaam: " + "\u001B[34m" + currentFirstName + "\u001B[0m");
+                        System.out.println("Achternaam: " + "\u001B[34m" + currentLastName + "\u001B[0m");
+                        System.out.println("Geboortedatum: " + "\u001B[34m" + currentDateOfBirth + "\u001B[0m");
+                        System.out.println("Hoogte: " + "\u001B[34m" + currentPatientHeight + "\u001B[0m");
+                        System.out.println("Gewicht: " + "\u001B[34m" + currentPatientWeight + "\u001B[0m");
+                    } else {
+                        System.out.println("\u001B[31mPatiënt met opgegeven ID niet gevonden.\u001B[0m");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("\u001B[31mOngeldige invoer: Voer een geldig geheel getal in. \u001B[0m");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("\u001B[31mOngeldige invoer: Voer een geldig geheel getal in. \u001B[0m");
+                System.out.print("Wil je nog een andere patiënt Zoken?"+"(\u001B[32mja\u001B[0m"+ "/" +"\u001B[31mnee\u001B[0m):");
+                String input = userInput.nextLine().toLowerCase();
+                if (!input.equals("ja")) {
+                    runner = false;
+                    System.out.println("\u001B[33mTerug naar Patiënten menu\u001B[0m");
+                }
+                else {
+                    runner = true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

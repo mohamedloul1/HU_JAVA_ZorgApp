@@ -8,6 +8,8 @@ public class Patient {
     private LocalDate dateOfBirth;
      double patientHeight;
      double patientWeight;
+    private Medication medication; // attribuut van het type Medication
+
     public Patient(int patientID, String firstName, String lastName, LocalDate dateOfBirth, double patientHeight, double patientWeight) {
         this.patientID = patientID;
         this.firstName = firstName;
@@ -15,6 +17,13 @@ public class Patient {
         this.dateOfBirth = dateOfBirth;
         this.patientHeight = patientHeight;
         this.patientWeight = patientWeight;
+    }
+    public void setMedication(Medication medication) {
+        this.medication = medication;
+    }
+
+    public Medication getMedication() {
+        return this.medication;
     }
     // Getter en setter-methoden voor de eigenschappen
     public int getPatientID() {

@@ -41,11 +41,11 @@ public class Main {
 //        RolesController rolesController = new RolesController();
 //        rolesController.retrieveRoles();
 //        rolesController.displayRolesList();
-
 //        rolesController.insertRole();
 //        MedicationController medicationController = new MedicationController();
 //        medicationController.getAllMedicationsWithNames();
 //        medicationController.insertMedications();
+PatientController patientController = new PatientController();
 
         AuthenticationServer authenticationServer = new AuthenticationServer();
         Users users = authenticationServer.login("Apotheker");
@@ -53,18 +53,15 @@ public class Main {
             if (users.hasType("admin")){
                 System.out.println("Access granted to admin functionality.");
             }else if (users.hasType("HuisArts")){
-                HuisArts.test();
-            }else if (users.hasType("apotheker")){
-                Apotheker.apothekerStartMenu();
+                Administration.UserChecker(users);
+            }else if (users.hasType("Apotheker")){
+                System.out.println("Jij bent als" + Colors.YELLOW_BOLD+"Apotheker "+Colors.RESET + "ingelogd");
+                Administration.UserChecker(users);
             }else {
                 System.out.println("Access denied. User doesn't have necessary roles.");
             }
         }else {
-            System.out.println("Invalid credentials. Access denied.");
+            System.out.println(Colors.RED+"Invalid credentials. Access denied."+Colors.RESET);
         }
-
-
-
-
     }
 }

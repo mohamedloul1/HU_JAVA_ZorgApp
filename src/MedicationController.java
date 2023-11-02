@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MedicationController {
+
     private Connection connection;
 
     public  MedicationController (){
@@ -64,18 +65,19 @@ List<Medication> medicationsList = new ArrayList<>();
                     String patientName = resultSet.getString("FirstName");
                     String patientLastName = resultSet.getString("LastName");
 
-                    System.out.format("Medicatie Nummer: \u001B[32m%s\u001B[0m," +
-                                    "Medicatie: \u001B[32m%s\u001B[0m," +
-                                    " Dosering: \u001B[32m%s\u001B[0m," +
-                                    " Patiëntnummer: \u001B[32m%d\u001B[0m," +
-                                    " Voornaam patiënt: \u001B[32m%s\u001B[0m," +
-                                    " Achternaam patiënt: \u001B[32m%s\u001B[0m %n" ,
+                    System.out.format("--------------------Medicatie Nummer:"+Colors.PURPLE+"%d" + Colors.RESET +"--------------------%n"+
+                                      "Voornaam patiënt:"+Colors.PURPLE+"%s %n" +Colors.RESET+
+                                      "Achternaam patiënt:"+Colors.PURPLE+"%s %n"+Colors.RESET+
+                                      "Patiëntnummer:"+Colors.PURPLE +"%s %n" + Colors.RESET +
+                                      "Medicatie naam:"+ Colors.PURPLE+ "%s %n" + Colors.RESET +
+                                      "Dosering:"+ Colors.PURPLE+"%s %n" + Colors.RESET ,
+
                             medication.getMedicationID(),
-                            medication.getMedicationName(),
-                            medication.getDosage(),
-                            medication.getPatientID(),
                             patientName,
-                            patientLastName
+                            patientLastName,
+                            medication.getPatientID(),
+                            medication.getMedicationName(),
+                            medication.getDosage()
                     );
                     medicationsList.add(medication);
                 }
@@ -88,6 +90,7 @@ List<Medication> medicationsList = new ArrayList<>();
 
 
     public void insertMedications() {
+        AuthenticationServer authenticationServer = new AuthenticationServer();
         PatientController patientController =new PatientController();
         Menus menus = new Menus();
         Scanner userInput = new Scanner(System.in);
@@ -96,9 +99,10 @@ List<Medication> medicationsList = new ArrayList<>();
         try {
             do {
                 try {
-                    patientController.displayPatientList();
-                    System.out.print("");
-                    System.out.print("Selecteer de patiënt aan wie u medicatie wilt toevoegen:");
+                    patientController.displayPatientListWithoutbackFunction();
+                    System.out.println("\n");
+                    System.out.print("------------------------------------------------------------- \n");
+                    System.out.print("Selecteer de patiënt aan wie u medicatie wilt toevoegen: \n");
                     int patientID = Integer.parseInt(userInput.nextLine());
                     System.out.print("Voer de naam van de nieuwe medicatie in: ");
                     String medicationName = userInput.nextLine();
@@ -116,30 +120,27 @@ List<Medication> medicationsList = new ArrayList<>();
 
                         if (affectedRows > 0) {
                             System.out.println("\n"+"Nieuwe medicatie succesvol toegevoegd 👇👇\n"+
-                                    "Medicatie Naam: " + "\u001B[32m" +
-                                    medicationName + "\u001B[0m \n" +
-                                    "Dosering: " + "\u001B[32m" + dosage +
-                                    "\u001B[0m \n" + "Patiëntnummer: " +
-                                    "\u001B[32m" + patientID + "\u001B[0m \n");
+                                    "Medicatie Naam: " + Colors.PURPLE + medicationName + Colors.RESET + "\n"+
+                                    "Dosering: " + Colors.PURPLE + dosage + Colors.RESET+ "\n"+
+                                    "Patiëntnummer: " + Colors.PURPLE + patientID + Colors.RESET);
                         } else {
-                            System.out.println("\u001B[31m Er is iets fout gegaan bij het toevoegen van de medicatie.\u001B[0m");
+                            System.out.println(Colors.RED+"Er is iets fout gegaan bij het toevoegen van de medicatie."+Colors.RESET);
                         }
                     }
                     // Vraag of de gebruiker nog een rol wil toevoegen
-                    System.out.print("\u001B[34m Wil je nog een andere medicatie toevoegen?:\u001B[0m"+"(\u001B[32mja\u001B[0m"+ "/" +"\u001B[31mnee\u001B[0m):");
+                    System.out.print("Wil je nog een andere medicatie toevoegen?:"+"(\u001B[32mja\u001B[0m"+ "/" +"\u001B[31mnee\u001B[0m):");
                     String input = userInput.nextLine().toLowerCase();
                     if (input.equals("ja")) {
-                        System.out.println("\u001B[33mVolg de stappen\u001B[0m");
+                        System.out.println("Volg de stappen");
                     }
                     else {
                         runner = false;
-                        System.out.println("\u001B[33mTerug naar hoofdmenu\u001B[0m");
-                        menus.medicationsMenu();
+
+                        System.out.println("je gaat terug naar hoofdmenu");
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("\u001B[31m Ongeldige invoer voor Patiëntnummer. Voer een geldig getal in.\u001B[0m");
                 }
-
             } while (runner) ;
         }catch (Exception e) {
             e.printStackTrace();
@@ -187,6 +188,7 @@ List<Medication> medicationsList = new ArrayList<>();
     public boolean deleteMedicationIdById(int medicationId) {
         Menus menus = new Menus();
         try {
+
             String sqlSelect = "SELECT * FROM Medications WHERE MedicationID = ?";
             try (PreparedStatement selectStatement = connection.prepareStatement(sqlSelect)) {
                 selectStatement.setInt(1, medicationId);
@@ -221,13 +223,14 @@ List<Medication> medicationsList = new ArrayList<>();
     }
 
     public void updateMedication() {
+        PatientController patientController = new PatientController();
         Menus menus = new Menus();
         Scanner userInput = new Scanner(System.in);
         var runner = true;
         try {
-            this.getAllMedicationsWithNames();
+            patientController.displayPatientListWithoutbackFunction();
             do {
-                System.out.print("Voer het ID van de Medicatie in die je wilt bijwerken: ");
+                System.out.print("Voer het nummer van de medicatie in die je wilt bijwerken: ");
                 try {
                     int MedicationID = Integer.parseInt(userInput.nextLine());
                     // Voer hier de rest van je code uit voor het bijwerken van de patiënt
@@ -241,26 +244,24 @@ List<Medication> medicationsList = new ArrayList<>();
                             String currentDosage = resultSet.getString("Dosage");
                             int currentPatientID = resultSet.getInt("PatientID");
 
-
-                            System.out.println("\u001B[32m Huidige gegevens van de patiënt:\u001B[0m");
-                            System.out.println("MedicationName: "+ "\u001B[34m" + currentMedicationName + "\u001B[0m");
-                            System.out.println("Dosage: "+ "\u001B[34m" + currentDosage + "\u001B[0m");
-                            System.out.println("Patientnummer: "+ "\u001B[34m" + currentPatientID + "\u001B[0m");
+                            System.out.println("\n");
+                            System.out.println("------------Huidige medicatie gegevens van de patiëntnummer:" + Colors.PURPLE+ currentPatientID + Colors.RESET+"------------");
+                            System.out.println("MedicationName: "+ Colors.PURPLE + currentMedicationName + Colors.RESET);
+                            System.out.println("Dosage: "+ Colors.PURPLE + currentDosage + Colors.RESET);
+                            System.out.println("Patientnummer: "+ Colors.PURPLE + currentPatientID + Colors.RESET);
 
                             // Vraag om nieuwe gegevens voor de patiënt
-                            System.out.print("Voer de nieuwe MedicationName in (druk op Enter om niet bij te werken): ");
+                            System.out.print("Voer de nieuwe medicatienaam in (druk op Enter om niet bij te werken): ");
                             String newMedicationName = userInput.nextLine();
                             if (!newMedicationName.isEmpty()) {
                                 currentMedicationName = newMedicationName;
                             }
 
-                            System.out.print("Voer de nieuwe Dosage in (druk op Enter om niet bij te werken): ");
+                            System.out.print("Voer de nieuwe dosering in (druk op Enter om niet bij te werken): ");
                             String newDosage = userInput.nextLine();
                             if (!newDosage.isEmpty()) {
                                 currentDosage = newDosage;
                             }
-
-
                             System.out.print("Voer de nieuwe Patinetnummer in (druk op Enter om niet bij te werken): ");
                             String newPatientID = userInput.nextLine();
                             if (!newPatientID.isEmpty()) {
@@ -270,30 +271,24 @@ List<Medication> medicationsList = new ArrayList<>();
                                     System.out.println("\u001B[31m Ongeldige invoer voor Patientnummer. De new Patientnummer is niet bijgewerkt.\u001B[0m");
                                 }
                             }
-
-
                             String sqlUpdate = "UPDATE Medications SET MedicationName=?, Dosage=?, PatientID=? WHERE MedicationID=?";
                             try (PreparedStatement updateStatement = connection.prepareStatement(sqlUpdate)) {
                                 updateStatement.setString(1, currentMedicationName);
                                 updateStatement.setString(2, currentDosage);
                                 updateStatement.setInt(3, currentPatientID);
                                 updateStatement.setInt(4, MedicationID);
-
-
                                 int affectedRows = updateStatement.executeUpdate();
-
                                 if (affectedRows > 0) {
                                     System.out.println("\u001B[32mMedicatie is succesvol bijgewerkt.\u001B[0m");
                                 } else {
                                     System.out.println("\u001B[31m Er is iets fout gegaan bij het bijwerken van de Medicatie.\u001B[0m");
                                 }
                             }
-                            System.out.print("\u001B[34m Wil je nog een andere Medicatie bijwerken? (ja/nee): \u001B[0m");
+                            System.out.print("Wil je nog een andere Medicatie bijwerken"+"(\u001B[32mja\u001B[0m" + "/" + "\u001B[31mnee\u001B[0m):");
                             String input = userInput.nextLine().toLowerCase();
                             if (!input.equals("ja")) {
                                 runner = false;
-                                System.out.println("\u001B[33mTerug naar Medicaties menu\u001B[0m");
-                                menus.medicationsMenu();                            }
+                                System.out.println("je gaat terug naar hoofdmenu");                            }
                         } else {
                             System.out.println("\u001B[31m Medicatie met opgegeven ID niet gevonden.\u001B[0m");
                         }
@@ -301,7 +296,6 @@ List<Medication> medicationsList = new ArrayList<>();
                 } catch(NumberFormatException e){
                     System.out.println("\u001B[31m Ongeldige invoer: Voer een geldig geheel getal in.\u001B[0m");
                 }
-
             }while (runner);
         } catch (Exception e) {
             e.printStackTrace();
