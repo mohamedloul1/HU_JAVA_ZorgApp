@@ -61,9 +61,9 @@ public class PatientController {
             e.printStackTrace();
         }
     }
-    Users users;
 
-
+    AuthenticationServer authenticationServer = new AuthenticationServer();
+    Users users = authenticationServer.login("Apotheker");
 
     public void displayPatientList( ) {
         this.retrievePatient();
@@ -90,11 +90,13 @@ public class PatientController {
             }
             Administration.BackToTheMainMenu(users);
 
+
         } catch (Exception e) {
             System.err.println("Er is een fout opgetreden bij het ophalen van patiëntgegevens: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     public void displayPatientListWithoutbackFunction( ) {
         this.retrievePatient();
         try {
@@ -357,6 +359,9 @@ public class PatientController {
                         Date currentDateOfBirth = resultSet.getDate("DateOfBirth");
                         double currentPatientHeight = resultSet.getDouble("PatientHeight");
                         double currentPatientWeight = resultSet.getDouble("PatienWeight");
+                        String currentMedicationName = resultSet.getString("medicationName");
+                        String currentDosage=resultSet.getString("dosage");
+
 
                         System.out.println("\u001B[32mPatiënt gevonden:\u001B[0m");
                         System.out.println("Voornaam: " + "\u001B[34m" + currentFirstName + "\u001B[0m");
@@ -364,6 +369,9 @@ public class PatientController {
                         System.out.println("Geboortedatum: " + "\u001B[34m" + currentDateOfBirth + "\u001B[0m");
                         System.out.println("Hoogte: " + "\u001B[34m" + currentPatientHeight + "\u001B[0m");
                         System.out.println("Gewicht: " + "\u001B[34m" + currentPatientWeight + "\u001B[0m");
+                        System.out.println("Medicatie: " + "\u001B[34m" + currentMedicationName + "\u001B[0m");
+                        System.out.println("Dosage: " + "\u001B[34m" + currentDosage + "\u001B[0m");
+
                     } else {
                         System.out.println("\u001B[31mPatiënt met opgegeven ID niet gevonden.\u001B[0m");
                     }
@@ -374,7 +382,7 @@ public class PatientController {
                 String input = userInput.nextLine().toLowerCase();
                 if (!input.equals("ja")) {
                     runner = false;
-                    System.out.println("\u001B[33mTerug naar Patiënten menu\u001B[0m");
+                    Administration.BackToTheMainMenu(users);
                 }
                 else {
                     runner = true;

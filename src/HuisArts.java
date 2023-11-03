@@ -34,7 +34,7 @@ public class HuisArts extends Users {
                         runner = false;
                         break;
                     case updateMedication:
-                        medicationController.updateMedication();
+                        medicationController.updateDosage();
                         runner = false;
                         break;
                     case ViewPatientList:

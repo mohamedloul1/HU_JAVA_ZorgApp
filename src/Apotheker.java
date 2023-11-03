@@ -10,7 +10,6 @@ public class Apotheker extends Users {
     static final int EditPatientData= 4;
     static final int SearchBypatientNumber= 5;
     static final int Exit= 6;
-
     public static void apothekerStartMenu(){
         MedicationController medicationController = new MedicationController();
         PatientController patientController = new PatientController();

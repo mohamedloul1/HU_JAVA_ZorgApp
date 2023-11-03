@@ -2,39 +2,20 @@ import java.util.Scanner;
 
 public class Administration {
     public static void UserChecker(Users users) {
-        String userType = "";
         if (users != null) {
             if (users.hasType("Apotheker")) {
-                userType = "Apotheker";
-            } else if (users.hasType("HuisArts"))
-            {
-                userType = "HuisArts";
-            }else if (users.hasType("Fysiotherapeut"))
-            {
-                userType = "Fysiotherapeut";
-            }
-            else if (users.hasType("Tandart"))
-            {
-                userType = "Tandart";
-            }
-        }
-
-        switch (userType){
-            case "Apotheker":
                 Apotheker.apothekerStartMenu();
-                break;
-            case "HuisArts":
+            } else if (users.hasType("HuisArts")) {
                 HuisArts.huisArtsStartMenu();
-                break;
-            case "Fysiotherapeut":
+            } else if (users.hasType("Fysiotherapeut")) {
                 System.out.println("Fysiotherapeut");
-                break;
-            case "Tandart":
+            } else if (users.hasType("Tandart")) {
                 System.out.println("Tandart");
-                break;
-            default:
+            } else {
                 System.out.println("Fout");
-                break;
+            }
+        } else {
+            System.out.println("Gebruiker is null");
         }
     }
     static final int BackToTheMainMenu = 1;

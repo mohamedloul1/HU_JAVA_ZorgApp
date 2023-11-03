@@ -303,6 +303,73 @@ List<Medication> medicationsList = new ArrayList<>();
             userInput.close();
         }
     }
+    public void updateDosage() {
+        PatientController patientController = new PatientController();
+        Menus menus = new Menus();
+        Scanner userInput = new Scanner(System.in);
+        var runner = true;
+        try {
+            patientController.displayPatientListWithoutbackFunction();
+            do {
+                System.out.print("Voer het nummer van de medicatie in die je wilt bijwerken: ");
+                try {
+                    int MedicationID = Integer.parseInt(userInput.nextLine());
+                    // Voer hier de rest van je code uit voor het bijwerken van de patiënt
+                    String sqlSelect = "SELECT * FROM Medications WHERE MedicationID = ?";
+                    try (PreparedStatement selectStatement = connection.prepareStatement(sqlSelect)) {
+                        selectStatement.setInt(1, MedicationID);
+                        ResultSet resultSet = selectStatement.executeQuery();
+
+                        if (resultSet.next()) {
+                            String currentMedicationName = resultSet.getString("MedicationName");
+                            String currentDosage = resultSet.getString("Dosage");
+                            int currentPatientID = resultSet.getInt("PatientID");
+
+                            System.out.println("\n");
+                            System.out.println("------------Huidige medicatie gegevens van de patiëntnummer:" + Colors.PURPLE + currentPatientID + Colors.RESET + "------------");
+                            System.out.println("MedicationName: " + Colors.PURPLE + currentMedicationName + Colors.RESET);
+                            System.out.println("Dosage: " + Colors.PURPLE + currentDosage + Colors.RESET);
+                            System.out.println("Patientnummer: " + Colors.PURPLE + currentPatientID + Colors.RESET);
+
+                            // Vraag om nieuwe gegevens voor de patiënt
+                            System.out.print("Voer de nieuwe dosering in (druk op Enter om niet bij te werken): ");
+                            String newDosage = userInput.nextLine();
+                            if (!newDosage.isEmpty()) {
+                                currentDosage = newDosage;
+                            }
+
+                            String sqlUpdate = "UPDATE Medications SET Dosage=? WHERE MedicationID=?";
+                            try (PreparedStatement updateStatement = connection.prepareStatement(sqlUpdate)) {
+                                updateStatement.setString(1, currentDosage);
+                                updateStatement.setInt(2, MedicationID);
+                                int affectedRows = updateStatement.executeUpdate();
+                                if (affectedRows > 0) {
+                                    System.out.println("\u001B[32mDosering is succesvol bijgewerkt.\u001B[0m");
+                                } else {
+                                    System.out.println("\u001B[31mEr is iets fout gegaan bij het bijwerken van de dosering.\u001B[0m");
+                                }
+                            }
+                            System.out.print("Wil je nog een andere Medicatie bijwerken" + "(\u001B[32mja\u001B[0m" + "/" + "\u001B[31mnee\u001B[0m):");
+                            String input = userInput.nextLine().toLowerCase();
+                            if (!input.equals("ja")) {
+                                runner = false;
+                                System.out.println("Je gaat terug naar het hoofdmenu");
+                            }
+                        } else {
+                            System.out.println("\u001B[31mMedicatie met opgegeven ID niet gevonden.\u001B[0m");
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("\u001B[31mOngeldige invoer: Voer een geldig geheel getal in.\u001B[0m");
+                }
+            } while (runner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            userInput.close();
+        }
+    }
+
 
 
 
