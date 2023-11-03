@@ -22,7 +22,7 @@ public class HuisArts extends Users {
                 System.out.println("\u001B[34mselecteer uw keuze om door te gaan\u001B[0m \n" +
                         "\n" +
                         "[" + Colors.BLUE + "1" + Colors.RESET + "]" + "medicatie toevoegen \n"+
-                        "[" + Colors.BLUE + "2" + Colors.RESET + "]" + "Medicatie bijwerken \n" +
+                        "[" + Colors.BLUE + "2" + Colors.RESET + "]" + "Dosering bijwerken \n" +
                         "[" + Colors.BLUE + "3" + Colors.RESET + "]" + "Bekijk de patiëntenlijst \n" +
                         "[" + Colors.BLUE + "4" + Colors.RESET + "]" + "Patiëntgegevens bewerken \n" +
                         "[" + Colors.BLUE + "5" + Colors.RESET + "]" + "Zoek op patiëntnummer \n" +
@@ -61,8 +61,6 @@ public class HuisArts extends Users {
             }
         }
     }
-    static final int BackToTheMainMenu = 1;
-
 }
 
 

@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 
 public class PatientController {
+    AuthenticationServer authenticationServer = new AuthenticationServer();
+    Users users = authenticationServer.login("HuisArts");
     private Connection connection;
 
     public PatientController (){
@@ -61,9 +63,6 @@ public class PatientController {
             e.printStackTrace();
         }
     }
-
-    AuthenticationServer authenticationServer = new AuthenticationServer();
-    Users users = authenticationServer.login("Apotheker");
 
     public void displayPatientList( ) {
         this.retrievePatient();
@@ -316,7 +315,7 @@ public class PatientController {
                             String input = userInput.nextLine().toLowerCase();
                             if (!input.equals("ja")) {
                                 runner = false;
-                                System.out.println("\u001B[33mTerug naar Patiënten menu\u001B[0m");
+                                Administration.BackToTheMainMenu(users);
                                 }
                         } else {
                             System.out.println("\u001B[31m Patiënt met opgegeven ID niet gevonden.\u001B[0m");

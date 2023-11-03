@@ -1,6 +1,9 @@
 import java.util.Scanner;
 
 public class Administration {
+
+
+
     public static void UserChecker(Users users) {
         if (users != null) {
             if (users.hasType("Apotheker")) {

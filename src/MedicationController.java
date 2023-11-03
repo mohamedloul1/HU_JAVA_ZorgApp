@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MedicationController {
+    AuthenticationServer authenticationServer = new AuthenticationServer();
+    Users users = authenticationServer.login("HuisArts");
 
     private Connection connection;
 
@@ -135,8 +137,7 @@ List<Medication> medicationsList = new ArrayList<>();
                     }
                     else {
                         runner = false;
-
-                        System.out.println("je gaat terug naar hoofdmenu");
+                        Administration.BackToTheMainMenu(users);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("\u001B[31m Ongeldige invoer voor Patiëntnummer. Voer een geldig getal in.\u001B[0m");
@@ -311,7 +312,7 @@ List<Medication> medicationsList = new ArrayList<>();
         try {
             patientController.displayPatientListWithoutbackFunction();
             do {
-                System.out.print("Voer het nummer van de medicatie in die je wilt bijwerken: ");
+                System.out.print("Voer het nummer van de medicatie in om Dosering aan te passen: ");
                 try {
                     int MedicationID = Integer.parseInt(userInput.nextLine());
                     // Voer hier de rest van je code uit voor het bijwerken van de patiënt
@@ -353,7 +354,7 @@ List<Medication> medicationsList = new ArrayList<>();
                             String input = userInput.nextLine().toLowerCase();
                             if (!input.equals("ja")) {
                                 runner = false;
-                                System.out.println("Je gaat terug naar het hoofdmenu");
+                                Administration.BackToTheMainMenu(users);
                             }
                         } else {
                             System.out.println("\u001B[31mMedicatie met opgegeven ID niet gevonden.\u001B[0m");
