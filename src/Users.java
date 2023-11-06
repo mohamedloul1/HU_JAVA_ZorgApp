@@ -14,14 +14,13 @@ public Users(int userId, String UserName){
 }
 
 public int getUserId(){return userId;}
-
     public String getUserName(){return userName;}
 
 public void addType(String type){
     userType.add(type);
 }
-
 public boolean hasType(String type){
     return userType.contains(type);
 }
+
 }

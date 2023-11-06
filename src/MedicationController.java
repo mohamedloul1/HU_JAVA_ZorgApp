@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class MedicationController {
     AuthenticationServer authenticationServer = new AuthenticationServer();
-    Users users = authenticationServer.login("HuisArts");
+    Users users = authenticationServer.login("Fysiotherapeut");
 
     private Connection connection;
 

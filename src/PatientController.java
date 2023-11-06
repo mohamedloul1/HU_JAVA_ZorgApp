@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class PatientController {
     AuthenticationServer authenticationServer = new AuthenticationServer();
-    Users users = authenticationServer.login("HuisArts");
+    Users users = authenticationServer.login("Fysiotherapeut");
     private Connection connection;
 
     public PatientController (){
@@ -115,7 +115,7 @@ public class PatientController {
                 System.out.format("Gewicht:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", patient.getPatientWeight());
                 System.out.format("BMI is:"+Colors.PURPLE+"%s"+Colors.RESET+"kg/m² %n", bmi);
                 System.out.format("Leeftijd:"+Colors.PURPLE+"%s"+Colors.RESET+"%n", age);
-                System.out.format("Medicatie ID:"+Colors.PURPLE+ "%d%n"+Colors.RESET, medication.getMedicationID());
+                System.out.format("Medicatie nummer:"+Colors.PURPLE+ "%d%n"+Colors.RESET, medication.getMedicationID());
                 System.out.format("Medicatie naam:"+Colors.PURPLE+ "%s%n"+Colors.RESET, medication.getMedicationName());
                 System.out.format("Dosering:"+Colors.PURPLE+" %s%n"+Colors.RESET, medication.getDosage());
             }

@@ -3,7 +3,6 @@ import java.util.Scanner;
 public class Administration {
 
 
-
     public static void UserChecker(Users users) {
         if (users != null) {
             if (users.hasType("Apotheker")) {
@@ -11,9 +10,9 @@ public class Administration {
             } else if (users.hasType("HuisArts")) {
                 HuisArts.huisArtsStartMenu();
             } else if (users.hasType("Fysiotherapeut")) {
-                System.out.println("Fysiotherapeut");
+                Fysiotherapeut.huisArtsStartMenu();
             } else if (users.hasType("Tandart")) {
-                System.out.println("Tandart");
+                Tandart.tandartStartMenu();
             } else {
                 System.out.println("Fout");
             }

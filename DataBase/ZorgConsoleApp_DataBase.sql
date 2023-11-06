@@ -43,3 +43,10 @@ CREATE TABLE Medications (
     FOREIGN KEY (PatientID) REFERENCES Patient(PatientID)
 );
 GO
+
+CREATE TABLE LungRegister (
+     LungID INT IDENTITY(1,1) PRIMARY KEY,
+     Register VARCHAR(250),
+     FOREIGN KEY (PatientID) REFERENCES Patient(PatientID)
+);
+GO

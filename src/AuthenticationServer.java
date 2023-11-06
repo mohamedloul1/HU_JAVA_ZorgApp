@@ -15,6 +15,12 @@ public class AuthenticationServer {
         Users apotheker = new Users(3,"Apotheker");
         apotheker.addType("Apotheker");
         user.add(apotheker);
+        Users fysiotherapeut = new Users(4,"Fysiotherapeut");
+        fysiotherapeut.addType("Fysiotherapeut");
+        user.add(fysiotherapeut);
+        Users tandart = new Users(4,"Tandart");
+        tandart.addType("Tandart");
+        user.add(tandart);
     }
     public Users login(String username){
         for(Users users : user){

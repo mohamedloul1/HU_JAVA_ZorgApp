@@ -4,6 +4,7 @@ public class Apotheker extends Users {
     public Apotheker(int userId, String UserName) {
         super(userId, UserName);
     }
+
     static final int addMedication= 1;
     static final int updateMedication = 2;
     static final int ViewPatientList= 3;
@@ -59,6 +60,7 @@ public class Apotheker extends Users {
             }
         }
     }
+
     static final int BackToTheMainMenu = 1;
     public static void BackToTheMainMenu() {
         Scanner userInput = new Scanner(System.in);
